@@ -11,6 +11,8 @@ from middleware import add_project
 
 from flask import jsonify
 from flask import render_template
+from flask import flash
+from flask import abort
 
 
 def init_api_routes(app):
@@ -83,6 +85,8 @@ def page_index():
 def init_website_routes(app):
     """ Adds website routes to Flask app """
     if app:
+        app.add_url_rule('/crash', 'crash_server',
+                         crash_server, methods=['GET'])
         app.add_url_rule('/about', 'page_about', page_about, methods=['GET'])
         app.add_url_rule('/project', 'page_project',
                          page_project, methods=['GET'])
@@ -91,3 +95,28 @@ def init_website_routes(app):
         app.add_url_rule('/experience', 'page_experience',
                          page_experience, methods=['GET'])
         app.add_url_rule('/', 'page_index', page_index, methods=['GET'])
+
+
+def crash_server():
+    """ Triggers an error 500 """
+    abort(500)
+
+
+def handle_error_404(error):
+    """ Handles 404 errors """
+
+    flash('Server says: {}'.format(error), 'error')
+    return render_template('404.html', selected_menu_item=None)
+
+
+def handle_error_500(error):
+    """ Handles 500 errors """
+    flash('Server says: {}'.format(error), 'error')
+    return render_template('500.html', selected_menu_item=None)
+
+
+def init_error_handlers(app):
+    """ Defines error handlers """
+    if app:
+        app.register_error_handler(404, handle_error_404)
+        app.register_error_handler(500, handle_error_500)
