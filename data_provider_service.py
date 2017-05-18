@@ -4,7 +4,7 @@ import datetime
 
 from candidate import Candidate
 from project import Project
-from datagenerator import DataGenerator
+from data_generator import DataGenerator
 
 
 class DataProviderService:
@@ -57,3 +57,14 @@ class DataProviderService:
         cand = Candidate(first_name, last_name, [])
         self.CANDIDATES.append(cand.serialize())
         return str(cand.id)
+
+    def add_project(self, project_name, project_description):
+        new_project = Project(project_name, datetime.datetime.utcnow(
+        ), datetime.datetime.utcnow(), project_description)
+
+        self.CANDIDATES[0]['experience'][0]['projects'].append(
+            new_project.serialize())
+        return str(new_project.id)
+
+    def get_random_projects(self, nr_of_projects):
+        return self.data_generator.generate_projects(nr_of_projects, True)
