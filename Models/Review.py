@@ -1,6 +1,6 @@
 """ Defines review structure """
 from sqlalchemy import Column, String, Integer, ForeignKey, Numeric, Date
-from Model import Model
+from .Model import Model
 
 
 class Review(Model):

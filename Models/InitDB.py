@@ -1,7 +1,7 @@
 """ Initializes database """
 
 from sqlalchemy import create_engine
-from Model import Model
+from .Model import Model
 
 
 def init_database(engine):

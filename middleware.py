@@ -1,19 +1,33 @@
 """ Defines functions to fetch and return data """
 
+from settings import Config
 from data_provider_service import DataProviderService
+
 from flask import jsonify
 from flask import abort
 from flask import make_response
 from flask import request
 from flask import url_for
 
-DATA_PROVIDER = DataProviderService(15)
+db_engine = Config.DB_ENGINE
+
+DATA_PROVIDER = DataProviderService(db_engine)
+
+
+def initialize_database():
+    """ Initializes database """
+    DATA_PROVIDER.init_database()
+
+
+def fill_database():
+    """ Seeds database """
+    DATA_PROVIDER.fill_database()
 
 
 def candidates(serialize=True):
     """ Returns candidates """
 
-    candidates_list = DATA_PROVIDER.get_candidates()
+    candidates_list = DATA_PROVIDER.get_candidate(serialize=serialize)
     if serialize:
         return jsonify({"candidates": candidates_list, "total": len(candidates_list)})
     else:
@@ -23,7 +37,7 @@ def candidates(serialize=True):
 def candidate_by_id(candidate_id):
     """ Returns candidate based on an ID """
 
-    candidate = DATA_PROVIDER.get_candidate(candidate_id)
+    candidate = DATA_PROVIDER.get_candidate(candidate_id, serialize=True)
     if candidate:
         return jsonify({"candidate": candidate})
     else:
@@ -39,18 +53,43 @@ def delete_candidate(candidate_id):
         return abort(404)
 
 
-def update_candidate_name(candidate_id, new_name):
-    """ Updates candidates name
+def update_candidate(id):
+    """ Updates candidate """
 
-        Args:
-            new_name: updated name
-    """
+    new_candidate = {
+        "first_name": request.form["first_name"],
+        "last_name": request.form["last_name"],
+        "email": request.form["email"],
+        "phone": request.form["phone"]
+    }
 
-    number_of_updated_items = DATA_PROVIDER.update_name(candidate_id, new_name)
-    if number_of_updated_items == 0:
+    updated_candidate = DATA_PROVIDER.update_candidate(id, new_candidate)
+    if not update_candidate:
         abort(404)
     else:
-        return jsonify({"total_updated": number_of_updated_items})
+        return jsonify({"candidate": updated_candidate})
+
+
+def add_candidate():
+    """ Adds candidate to database """
+
+    first_name = request.form["first_name"]
+    last_name = request.form["last_name"]
+    email = request.form["email"]
+    phone = request.form["phone"]
+    birthday = request.form["birthday"]
+
+    new_candidate_id = DATA_PROVIDER.add_candidate(
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+        birthday=birthday,
+        phone=phone)
+
+    return jsonify({
+        "id": new_candidate_id,
+        "url": url_for("candidate_by_id", id=new_candidate_id)
+    })
 
 
 def random_candidates(number_of_items):
@@ -62,20 +101,6 @@ def random_candidates(number_of_items):
 
     candidates_list = DATA_PROVIDER.get_random_candidates(number_of_items)
     return jsonify({"candidates": candidates_list, "total": len(candidates_list)})
-
-
-def add_candidate():
-    """ Adds candidate to database """
-
-    first_name = request.form["first_name"]
-    last_name = request.form["last_name"]
-
-    new_candidate_id = DATA_PROVIDER.add_candidate(first_name, last_name)
-
-    return jsonify({
-        "id": new_candidate_id,
-        "url": url_for("candidate_by_id", id=new_candidate_id)
-    })
 
 
 def random_projects(number_of_items):
@@ -94,3 +119,8 @@ def add_project():
         project_name, project_description)
 
     return jsonify({"id": new_project_id})
+
+
+def build_message(key, message):
+    """ Returns message """
+    return {key: message}

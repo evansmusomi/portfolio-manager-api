@@ -5,11 +5,6 @@ from routes import init_website_routes
 from routes import init_error_handlers
 
 from flask import Flask
-from flask import jsonify
-from flask import url_for
-from flask import abort
-from flask import make_response
-from flask import request
 
 # create Flask app
 app = Flask(__name__)

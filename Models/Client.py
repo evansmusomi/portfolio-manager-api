@@ -2,7 +2,7 @@
 
 from sqlalchemy import Column, String, Integer, ForeignKey, Numeric, Date
 from sqlalchemy.orm import relationship
-from Model import Model
+from .Model import Model
 
 
 class Client(Model):

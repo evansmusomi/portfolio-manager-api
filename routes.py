@@ -3,29 +3,33 @@
 from middleware import candidates
 from middleware import candidate_by_id
 from middleware import add_candidate
-from middleware import update_candidate_name
+from middleware import update_candidate
 from middleware import random_candidates
 from middleware import delete_candidate
 from middleware import random_projects
 from middleware import add_project
+from middleware import initialize_database as init_db
+from middleware import fill_database as fill_db
+from middleware import build_message
 
 from flask import jsonify
 from flask import render_template
 from flask import flash
+from flask import current_app
 from flask import abort
 
 
 def init_api_routes(app):
     """ Adds API routes to Flask app """
     if app:
-        app.add_url_rule('/api/candidates/<string:id>',
+        app.add_url_rule('/api/candidates/<string:candidate_id>',
                          'candidate_by_id', candidate_by_id, methods=['GET'])
         app.add_url_rule('/api/candidates', 'candidates',
                          candidates, methods=['GET'])
         app.add_url_rule('/api/candidates', 'add_candidate',
                          add_candidate, methods=['POST'])
         app.add_url_rule('/api/candidates/<string:id>/name/<string:new_name>',
-                         'update_candidate_name', update_candidate_name, methods=['PUT'])
+                         'update_candidate_name', update_candidate, methods=['PUT'])
         app.add_url_rule('/api/candidates/random', 'get_random_candidate',
                          random_candidates, methods=['GET'], defaults={'number_of_items': 1})
         app.add_url_rule('/api/candidates/random/<int:number_of_items>',
@@ -38,6 +42,8 @@ def init_api_routes(app):
                          add_project, methods=['POST'])
         app.add_url_rule('/api/list_routes', 'list_routes',
                          list_routes, methods=['GET'], defaults={'app': app})
+        app.add_url_rule('/api/initdb', 'initdb', initialize_database)
+        app.add_url_rule('/api/filldb', 'filldb', fill_database)
 
 
 def list_routes(app):
@@ -120,3 +126,27 @@ def init_error_handlers(app):
     if app:
         app.register_error_handler(404, handle_error_404)
         app.register_error_handler(500, handle_error_500)
+
+
+def initialize_database():
+    """ Initializes database """
+    message_key = "Initialize database"
+
+    try:
+        init_db()
+    except ValueError as err:
+        return jsonify(build_message(message_key, err.message))
+
+    return jsonify(build_message(message_key, "OK"))
+
+
+def fill_database():
+    """ Fills database """
+    message_key = "Fill database"
+
+    try:
+        fill_db()
+    except ValueError as err:
+        return jsonify(build_message(message_key, err.message))
+
+    return jsonify(build_message(message_key, "OK"))

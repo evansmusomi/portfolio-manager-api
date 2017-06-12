@@ -2,14 +2,14 @@
 
 from sqlalchemy import Column, String, Integer, ForeignKey, Numeric, Date
 from sqlalchemy.orm import relationship
-from Model import Model
+from .Model import Model
 
 
 class Candidate(Model):
     """ Candidate object blueprint """
 
     __tablename__ = 'candidates'
-    id = Column(Integer, primary_key=True, null=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     first_name = Column(String(200), nullable=False)
     last_name = Column(String(200), nullable=False)
     email = Column(String(200), nullable=False)
