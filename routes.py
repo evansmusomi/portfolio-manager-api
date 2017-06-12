@@ -4,10 +4,7 @@ from middleware import candidates
 from middleware import candidate_by_id
 from middleware import add_candidate
 from middleware import update_candidate
-from middleware import random_candidates
 from middleware import delete_candidate
-from middleware import random_projects
-from middleware import add_project
 from middleware import initialize_database as init_db
 from middleware import fill_database as fill_db
 from middleware import build_message
@@ -28,18 +25,10 @@ def init_api_routes(app):
                          candidates, methods=['GET'])
         app.add_url_rule('/api/candidates', 'add_candidate',
                          add_candidate, methods=['POST'])
-        app.add_url_rule('/api/candidates/<string:id>/name/<string:new_name>',
-                         'update_candidate_name', update_candidate, methods=['PUT'])
-        app.add_url_rule('/api/candidates/random', 'get_random_candidate',
-                         random_candidates, methods=['GET'], defaults={'number_of_items': 1})
-        app.add_url_rule('/api/candidates/random/<int:number_of_items>',
-                         'get_random_candidates', random_candidates, methods=['GET'])
-        app.add_url_rule('/api/candidates/delete/<string:id>',
+        app.add_url_rule('/api/candidates/<string:candidate_id>',
+                         'update_candidate', update_candidate, methods=['PUT'])
+        app.add_url_rule('/api/candidates/<string:candidate_id>',
                          'delete_candidate', delete_candidate, methods=['DELETE'])
-        app.add_url_rule('/api/projects/random/<int:number_of_items>',
-                         'get_random_projects', random_projects, methods=['GET'])
-        app.add_url_rule('/api/projects', 'add_project',
-                         add_project, methods=['POST'])
         app.add_url_rule('/api/list_routes', 'list_routes',
                          list_routes, methods=['GET'], defaults={'app': app})
         app.add_url_rule('/api/initdb', 'initdb', initialize_database)

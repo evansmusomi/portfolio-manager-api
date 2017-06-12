@@ -61,10 +61,14 @@ class DataProviderService:
         else:
             return all_candidates
 
-    def update_candidate(self, id, new_candidate):
+    def update_candidate(self, candidate_id, new_candidate):
         """ Updates existing candidate with new details """
         updated_candidate = None
-        candidate = self.get_candidate(id)[0]
+        candidates = self.get_candidate(candidate_id)
+        if len(candidates) is not 1:
+            return updated_candidate
+        else:
+            candidate = candidates[0]
 
         if candidate:
             candidate.email = new_candidate["email"]
@@ -73,9 +77,18 @@ class DataProviderService:
             candidate.last_name = new_candidate["last_name"]
             self.session.add(candidate)
             self.session.commit()
-            updated_candidate = self.get_candidate(id)[0]
+            updated_candidate = self.get_candidate(candidate_id)[0]
 
-        return updated_candidate
+        return updated_candidate.serialize()
+
+    def delete_candidate(self, candidate_id):
+        """ Deletes specified candidate """
+        if candidate_id:
+            items_deleted = self.session.query(Candidate).filter(
+                Candidate.id == candidate_id).delete()
+            self.session.commit()
+            return items_deleted > 0
+        return False
 
     def fill_database(self):
         """ Seeds database """

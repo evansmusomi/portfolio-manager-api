@@ -41,33 +41,7 @@ def candidate_by_id(candidate_id):
     if candidate:
         return jsonify({"candidate": candidate})
     else:
-        abort(404)
-
-
-def delete_candidate(candidate_id):
-    """ Deletes candidate given an ID """
-
-    if DATA_PROVIDER.delete_candidate(candidate_id):
-        return make_response('', 200)
-    else:
-        return abort(404)
-
-
-def update_candidate(id):
-    """ Updates candidate """
-
-    new_candidate = {
-        "first_name": request.form["first_name"],
-        "last_name": request.form["last_name"],
-        "email": request.form["email"],
-        "phone": request.form["phone"]
-    }
-
-    updated_candidate = DATA_PROVIDER.update_candidate(id, new_candidate)
-    if not update_candidate:
-        abort(404)
-    else:
-        return jsonify({"candidate": updated_candidate})
+        return make_response('', 404)
 
 
 def add_candidate():
@@ -92,33 +66,31 @@ def add_candidate():
     })
 
 
-def random_candidates(number_of_items):
-    """ Gets random number of candidates
+def update_candidate(candidate_id):
+    """ Updates candidate """
 
-        Args:
-            number_of_items: number of random items to get (default = 1)
-    """
+    new_candidate = {
+        "first_name": request.form["first_name"],
+        "last_name": request.form["last_name"],
+        "email": request.form["email"],
+        "phone": request.form["phone"]
+    }
 
-    candidates_list = DATA_PROVIDER.get_random_candidates(number_of_items)
-    return jsonify({"candidates": candidates_list, "total": len(candidates_list)})
+    updated_candidate = DATA_PROVIDER.update_candidate(
+        candidate_id, new_candidate)
+    if not updated_candidate:
+        return make_response('', 204)
+    else:
+        return jsonify({"candidate": updated_candidate})
 
 
-def random_projects(number_of_items):
-    """ Gets random number of projects """
-    projects = DATA_PROVIDER.get_random_projects(number_of_items)
-    return jsonify({"projects": projects, "total": len(projects)})
+def delete_candidate(candidate_id):
+    """ Deletes candidate given an ID """
 
-
-def add_project():
-    """ Adds new project to database """
-
-    project_name = request.form["name"]
-    project_description = request.form["description"]
-
-    new_project_id = DATA_PROVIDER.add_project(
-        project_name, project_description)
-
-    return jsonify({"id": new_project_id})
+    if DATA_PROVIDER.delete_candidate(candidate_id):
+        return make_response('', 204)
+    else:
+        return make_response('', 404)
 
 
 def build_message(key, message):
