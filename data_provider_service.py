@@ -83,6 +83,9 @@ class DataProviderService:
 
     def delete_candidate(self, candidate_id):
         """ Deletes specified candidate """
+        if int(candidate_id) < 0:
+            raise ValueError("Parameter [id] should be a positive number!")
+
         if candidate_id:
             items_deleted = self.session.query(Candidate).filter(
                 Candidate.id == candidate_id).delete()

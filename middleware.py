@@ -110,11 +110,25 @@ def update_candidate(candidate_id):
 
 def delete_candidate(candidate_id):
     """ Deletes candidate given an ID """
+    try:
+        if DATA_PROVIDER.delete_candidate(candidate_id):
+            return make_response('', 204)
+        else:
+            return make_response('', 404)
+    except ValueError as err:
+        tmp_response = make_response("", 500)
+        tmp_response.headers["X-APP-ERROR-CODE"] = get_error_code(str(err))
+        tmp_response.headers["X-APP-ERROR-MESSAGE"] = err
+        return tmp_response
 
-    if DATA_PROVIDER.delete_candidate(candidate_id):
-        return make_response('', 204)
-    else:
-        return make_response('', 404)
+
+def get_error_code(error):
+    """ Gets error code """
+
+    if "parameter" in error.lower():
+        return 9100
+
+    return 9000
 
 
 def build_message(key, message):
