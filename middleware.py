@@ -1,6 +1,8 @@
 """ Defines functions to fetch and return data """
 
 from math import ceil
+import hashlib
+import json
 
 from settings import Config
 from data_provider_service import DataProviderService
@@ -45,7 +47,13 @@ def candidates(serialize=True):
         candidates_list = candidates_list[from_index:stop_index]
 
     if serialize:
-        return jsonify({"candidates": candidates_list, "total": len(candidates_list)})
+        data = {"candidates": candidates_list, "total": len(candidates_list)}
+        json_data = json.dumps(data)
+        response = make_response(jsonify(data), 200)
+        response.headers["ETag"] = str(hashlib.sha256(
+            json_data.encode('utf-8')).hexdigest())
+        response.headers["Cache-Control"] = "private, max-age=300"
+        return response
     else:
         return candidates_list
 
