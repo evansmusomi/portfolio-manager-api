@@ -11,3 +11,5 @@ class Config(object):
     """ Defines config variables """
 
     DB_ENGINE = os.environ.get("DB_ENGINE")
+    USERNAME = os.environ.get("USERNAME")
+    PASSWORD = os.environ.get("PASSWORD")

@@ -1,5 +1,7 @@
 """ Defines application routes """
 
+from decorators import authenticate
+
 from middleware import candidates
 from middleware import candidate_by_id
 from middleware import add_candidate
@@ -48,6 +50,7 @@ def list_routes(app):
     return jsonify({"routes": result, "total": len(result)})
 
 
+@authenticate
 def page_about():
     """ Renders about page """
     return render_template('about.html', selected_menu_item='about')
