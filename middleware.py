@@ -1,5 +1,7 @@
 """ Defines functions to fetch and return data """
 
+from math import ceil
+
 from settings import Config
 from data_provider_service import DataProviderService
 
@@ -10,8 +12,9 @@ from flask import request
 from flask import url_for
 
 db_engine = Config.DB_ENGINE
-
 DATA_PROVIDER = DataProviderService(db_engine)
+
+PAGE_SIZE = 2
 
 
 def initialize_database():
@@ -28,6 +31,19 @@ def candidates(serialize=True):
     """ Returns candidates """
 
     candidates_list = DATA_PROVIDER.get_candidate(serialize=serialize)
+    page = request.args.get("page")
+
+    if page:
+        number_of_pages = int(ceil(float(len(candidates_list)) / PAGE_SIZE))
+        converted_page = int(page)
+        if converted_page > number_of_pages or converted_page < 0:
+            return make_response("", 404)
+
+        from_index = converted_page * PAGE_SIZE - PAGE_SIZE
+        stop_index = from_index + PAGE_SIZE
+
+        candidates_list = candidates_list[from_index:stop_index]
+
     if serialize:
         return jsonify({"candidates": candidates_list, "total": len(candidates_list)})
     else:
