@@ -7,3 +7,4 @@ venv/
 # Artifacts
 __pycache__/
 .cache/
+*.pyc

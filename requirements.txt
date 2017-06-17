@@ -5,8 +5,10 @@ itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
 packaging==16.8
+psycopg2==2.7.1
+PyLD==0.7.2
 pyparsing==2.2.0
-python-dotenv==0.6.4
+python-env==1.0.0
 six==1.10.0
 SQLAlchemy==1.1.10
 Werkzeug==0.12.2

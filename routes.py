@@ -139,6 +139,6 @@ def fill_database():
     try:
         fill_db()
     except ValueError as err:
-        return jsonify(build_message(message_key, err.message))
+        return jsonify(build_message(message_key, str(err)))
 
     return jsonify(build_message(message_key, "OK"))
