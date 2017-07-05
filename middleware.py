@@ -5,6 +5,7 @@ import hashlib
 import json
 
 from settings import Config
+from decorators import check_token
 from data_provider_service import DataProviderService
 
 from flask import jsonify
@@ -58,6 +59,7 @@ def candidates(serialize=True):
         return candidates_list
 
 
+@check_token
 def candidate_by_id(candidate_id):
     """ Returns candidate based on an ID """
 
@@ -129,6 +131,11 @@ def get_error_code(error):
         return 9100
 
     return 9000
+
+
+def is_user_valid(username, password):
+    """ Determines if user is provided is valid """
+    return DATA_PROVIDER.is_user_valid(username, password)
 
 
 def build_message(key, message):

@@ -1,12 +1,14 @@
 """ Defines data provider service """
 
 import datetime
+import hashlib
 
 from Models import Candidate
 from Models import Recruiter
 from Models import Client
 from Models import Position
 from Models import Interview
+from Models import User
 from Models import init_database
 
 from sqlalchemy import create_engine
@@ -93,8 +95,28 @@ class DataProviderService:
             return items_deleted > 0
         return False
 
+    def is_user_valid(self, username, password):
+        """ Check if user exists """
+        temp_hashed_password = self.get_hashed_password(password)
+        user = self.session.query(User).filter(User.user_name == username).filter(
+            User.password == temp_hashed_password)
+        return user is not None
+
+    def get_hashed_password(self, password):
+        """ Converts text into hashed version """
+        temp_salt = "This !s a salt for password"
+        hashed_password = hashlib.sha256(
+            "{}{}".format(password, temp_salt).encode('utf-8')).hexdigest()
+        return hashed_password
+
     def fill_database(self):
         """ Seeds database """
+        # Users
+        user1 = User(first_name="Evans", last_name="Musomi",
+                     user_name="emu", password=self.get_hashed_password("musomi"))
+        self.session.add(user1)
+        self.session.commit()
+
         # Candidates
 
         cand1 = Candidate(first_name="John",
