@@ -37,10 +37,11 @@ def check_token(func):
     """ Checks token in request """
     @wraps(func)
     def decorated(*args, **kwargs):
+        """ Responds with app error code if no valid token found in heaader """
         if request.headers[TOKEN_HEADER_NAME] and request.headers[TOKEN_HEADER_NAME] != TOKEN:
             response = make_response("", 401)
             response.headers["X-APP-ERROR-CODE"] = 9500
-            response.headers["X-APP-ERROR-MESSAGE"] = "No valid authentication found in request"
+            response.headers["X-APP-ERROR-MESSAGE"] = "No valid authentication token found in request"
             return response
         return func(*args, **kwargs)
     return decorated
