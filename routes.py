@@ -13,9 +13,12 @@ from middleware import build_message
 
 from flask import jsonify
 from flask import render_template
+from flask import make_response
 from flask import flash
 from flask import current_app
 from flask import abort
+
+TOKEN_HEADER_NAME = "MY_AUTH_TOKEN"
 
 
 def init_api_routes(app):
@@ -50,28 +53,19 @@ def list_routes(app):
     return jsonify({"routes": result, "total": len(result)})
 
 
-@authenticate
 def page_about():
     """ Renders about page """
-    return render_template('about.html', selected_menu_item='about')
+    response = make_response(render_template(
+        'about.html', selected_menu_item="about"))
+    return response
 
 
-def page_project():
-    """ Renders project page """
-    return render_template('project.html', selected_menu_item='project')
-
-
-def page_experience():
-    """ Renders candidate experience """
-    return render_template('experience.html', selected_menu_item='experience')
-
-
-def page_candidate():
+def page_candidates():
     """ Renders candidate info """
     current_candidates = candidates(serialize=False)
     return render_template(
         'candidate.html',
-        selected_menu_item='candidate',
+        selected_menu_item='candidates',
         candidates=current_candidates)
 
 
@@ -86,12 +80,8 @@ def init_website_routes(app):
         app.add_url_rule('/crash', 'crash_server',
                          crash_server, methods=['GET'])
         app.add_url_rule('/about', 'page_about', page_about, methods=['GET'])
-        app.add_url_rule('/project', 'page_project',
-                         page_project, methods=['GET'])
-        app.add_url_rule('/candidate', 'page_candidate',
-                         page_candidate, methods=['GET'])
-        app.add_url_rule('/experience', 'page_experience',
-                         page_experience, methods=['GET'])
+        app.add_url_rule('/candidates', 'page_candidates',
+                         page_candidates, methods=['GET'])
         app.add_url_rule('/', 'page_index', page_index, methods=['GET'])
 
 

@@ -4,8 +4,6 @@
 
 <h3>Candidates</h3>
 
-<h4>Senior candidates</h4>
-
 <div class="row onePadding">
     <div class="col-md-12 col-sm-12">
         <div class="table-responsive">
@@ -13,15 +11,15 @@
                 <tr>
                     <th>First Name</th>
                     <th>Last Name</th>
-                    <th>Domain</th>
-                    <th>Years of Exp.</th>
+                    <th>Email</th>
+                    <th>Languages</th>
                 </tr>
-                {% for candidate in candidates | senior_candidate %}
+                {% for candidate in candidates %}
                     <tr>
                         <td>{{candidate['first_name']}}</td>
                         <td>{{candidate['last_name']}}</td>
-                        <td>{{candidate['domain']}}</td>
-                        <td>{{candidate['years']}}</td>
+                        <td>{{candidate['email']}}</td>
+                        <td>{{candidate['languages']}}</td>
                     </tr>
                 {% endfor %}
             </table>
