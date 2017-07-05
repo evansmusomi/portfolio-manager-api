@@ -1,7 +1,5 @@
 """ Defines application routes """
 
-from decorators import authenticate
-
 from middleware import candidates
 from middleware import candidate_by_id
 from middleware import add_candidate
