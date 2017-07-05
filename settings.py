@@ -14,3 +14,4 @@ class Config(object):
     USERNAME = os.environ.get("USERNAME")
     PASSWORD = os.environ.get("PASSWORD")
     UNIQUE_TOKEN = os.environ.get("UNIQUE_TOKEN").encode('utf-8')
+    AUTH_TOKEN = os.environ.get("AUTH_TOKEN")

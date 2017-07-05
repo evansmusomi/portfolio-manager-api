@@ -2,6 +2,7 @@
 import unittest
 import json
 import app
+from settings import Config
 
 
 class ApiTestCase(unittest.TestCase):
@@ -16,10 +17,11 @@ class ApiTestCase(unittest.TestCase):
         """ Tests GET /api/candidates """
         response = self.app.get('/api/candidates')
         tmp_data = json.loads(response.data)
-        assert len(tmp_data['candidates']) == 3
+        assert tmp_data['candidates']
 
     def test_api_candidate_by_id_OK(self):
         """ Tests GET /api/candidates/<string:candidate_id>"""
-        response = self.app.get('/api/candidates/1')
+        response = self.app.get('/api/candidates/1',
+                                headers={"MY_AUTH_TOKEN": Config.AUTH_TOKEN})
         tmp_data = json.loads(response.data)
         assert len(tmp_data['candidate']) == 1
