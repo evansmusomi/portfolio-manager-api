@@ -77,7 +77,7 @@ def add_candidate():
     last_name = request.form["last_name"]
     email = request.form["email"]
     phone = request.form["phone"]
-    birthday = request.form["birthday"]
+    birthday = request.form["birthday"] if request.form["birthday"] is not None else ""
 
     new_candidate_id = DATA_PROVIDER.add_candidate(
         first_name=first_name,
@@ -88,7 +88,7 @@ def add_candidate():
 
     return jsonify({
         "id": new_candidate_id,
-        "url": url_for("candidate_by_id", id=new_candidate_id)
+        "url": url_for("candidate_by_id", candidate_id=new_candidate_id)
     })
 
 
@@ -99,6 +99,7 @@ def update_candidate(candidate_id):
         "first_name": request.form["first_name"],
         "last_name": request.form["last_name"],
         "email": request.form["email"],
+        "birthday": request.form["birthday"],
         "phone": request.form["phone"]
     }
 

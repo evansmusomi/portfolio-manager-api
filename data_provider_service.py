@@ -1,6 +1,6 @@
 """ Defines data provider service """
 
-import datetime
+from datetime import datetime
 import hashlib
 
 from Models import Candidate
@@ -39,7 +39,7 @@ class DataProviderService:
         """ Creates and saves a new candidate to the database """
 
         new_candidate = Candidate(first_name=first_name, last_name=last_name, email=email,
-                                  birthday=birthday, phone=phone, languages=languages,
+                                  birthday=datetime.strptime(birthday, "%Y-%m-%d"), phone=phone, languages=languages,
                                   skills=skills)
         self.session.add(new_candidate)
         self.session.commit()
@@ -77,6 +77,8 @@ class DataProviderService:
             candidate.phone = new_candidate["phone"]
             candidate.first_name = new_candidate["first_name"]
             candidate.last_name = new_candidate["last_name"]
+            candidate.birthday = datetime.strptime(
+                new_candidate["birthday"], "%Y-%m-%d")
             self.session.add(candidate)
             self.session.commit()
             updated_candidate = self.get_candidate(candidate_id)[0]
