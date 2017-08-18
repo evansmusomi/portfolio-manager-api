@@ -72,6 +72,11 @@ def page_index():
     return render_template('index.html', selected_menu_item='index')
 
 
+def page_docs():
+    """ Renders documentation """
+    return render_template('docs.html')
+
+
 def init_website_routes(app):
     """ Adds website routes to Flask app """
     if app:
@@ -81,6 +86,7 @@ def init_website_routes(app):
         app.add_url_rule('/candidates', 'page_candidates',
                          page_candidates, methods=['GET'])
         app.add_url_rule('/', 'page_index', page_index, methods=['GET'])
+        app.add_url_rule('/api-docs', 'page_docs', page_docs, methods=['GET'])
 
 
 def crash_server():

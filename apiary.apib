@@ -1,0 +1,69 @@
+FORMAT: 1A
+HOST: http://localhost:5000
+
+# portfoliomanager
+
+Portfolio Manager allows HR firms to manage their candidate list.
+
+## Candidates Collection [/api/candidates]
+
+### List All Candidates [GET]
+
+You may view a list of candidates using this action.
+
++ Response 200 (application/json)
+
+        {
+            "candidates": [
+                {
+                    "@context": {
+                        "birthday": "http://schema.org/birthDate",
+                        "email": "http://schema.org/email",
+                        "first_name": "http://schema.org/first_name",
+                        "id": "http://schema.org/id",
+                        "languages": "http://schema.org/languages",
+                        "last_name": "http://schema.org/last_name",
+                        "number_of_interviews": "http://schema.org/number_of_interviews",
+                        "number_of_reviews": "http://schema.org/number_of_reviews",
+                        "phone": "http://schema.org/telephone",
+                        "skills": "http://schema.org/skills"
+                    },
+                    "birthday": "1989-01-21",
+                    "email": "last@first.com",
+                    "first_name": "First",
+                    "id": 15,
+                    "languages": "",
+                    "last_name": "Last",
+                    "number_of_interviews": 0,
+                    "number_of_reviews": 0,
+                    "phone": "123-567-123"
+                }
+            ],
+            "total": 1
+        }
+
+### Create a New Candidate [POST]
+
+You may create a new candidate using this action. It takes a JSON
+object containing a candidate's attributes.
+
++ Request (application/json)
+
+        {
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "john@doe.com",
+            "birthday":"1989-01-21",
+            "phone": "123-567-123"
+        }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "id": 17,
+                "url": "/api/candidates/17"
+            }
+
+
